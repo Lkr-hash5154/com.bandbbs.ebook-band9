@@ -493,13 +493,16 @@
 		});
 	  },
 	  gotoSetting(){
+		// 立即保存并跳转（去掉无必要延迟与前导/，避免路径解析失败）
 		this.saveData();
-		setTimeout(() => {
+		try {
 			router.push({
-				uri: '/pages/detailsetting',
+				uri: 'pages/detailsetting/detailsetting', // 若实际文件为 pages/detailsetting/index 则改成对应路径
 				params: { cPath: this.cPath, name: this.name, size: allSize }
 			});
-		}, 200);
+		} catch(e){
+			prompt.showToast({ message: '进入设置失败: '+ (e && e.message ? e.message : e), duration: 2000 });
+		}
 	  },
 	  //【保存进度】只更新当前书籍对应的记录，格式 {"book1":{"p":..., "s":..., "o":0}, ...}
 	  saveData(){
@@ -578,15 +581,15 @@
 		return true;
 	  },
 	  back(){
+		// 去掉延迟直接返回，避免某些情况下无法退出
 		this.saveData();
-		setTimeout(() => {
-			router.back();
-		}, 200);
+		try { router.back(); }
+		catch(e){ prompt.showToast({ message: '返回失败', duration:2000 }); }
 	  },
 	  routerTo(url){
-		router.push({
-		  uri: '/pages/' + url
-		});
+		// 统一去掉前导/，与 manifest 中定义保持一致
+		try { router.push({ uri: 'pages/' + url + '/' + url }); }
+		catch(e){ prompt.showToast({ message: '跳转失败', duration:2000 }); }
 	  },
   	onTxtClick(event) {
 		// 新增：双击检测。双击 300ms 内第二次点击触发屏幕常亮切换，单击延后执行原逻辑
