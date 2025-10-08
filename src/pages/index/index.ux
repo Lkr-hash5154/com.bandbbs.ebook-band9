@@ -8,7 +8,10 @@
 
 	  <list class="list">
 		  <list-item for="{{fileList}}" class="item" @click="selectFile($item)" type="nook">
-			  <text class="itemtext">{{$item.name}}</text>
+			  <!-- 跑马灯：当文件名过长时添加 marquee 类 -->
+			  <div class="title-wrapper">
+				<text class="itemtext {{ $item.name.length > 6 ? 'marquee' : '' }}">{{$item.name}}</text>
+			  </div>
 			  <text class="itemtext2">已阅读 {{$item.percent}}%</text>
 		  </list-item>
 	  </list>
@@ -174,6 +177,11 @@ export default {
   justify-content: space-between;
 }
 
+.title-wrapper {
+  width: 100%;
+  overflow: hidden; /* 限制超出部分用于跑马灯 */
+}
+
 .itemtext {
 	font-size: 32px;
 	line-height:44.8px;
@@ -182,9 +190,23 @@ export default {
 	color: white;
 	text-overflow: ellipsis;
 	lines: 1;
-	/* padding-left:12px; */
-	/* padding-right:12px; */
-	/* padding-top:12px; */
+}
+
+/* 跑马灯动画，当名字长度大于阈值时附加 marquee 类 */
+.itemtext.marquee {
+  /* 预留空白，避免立即回跳 */
+  padding-right: 96px;
+  animation-name: marqueeScroll;
+  animation-duration: 8s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  10% { transform: translateX(0); }
+  90% { transform: translateX(-60%); }
+  100% { transform: translateX(-60%); }
 }
 
 .itemtext2 {
@@ -195,7 +217,6 @@ export default {
 	color: #a8a8a8;
 	text-overflow: ellipsis;
 	lines: 1;
-	/* padding-right:12px; */
 }
 
 </style>
