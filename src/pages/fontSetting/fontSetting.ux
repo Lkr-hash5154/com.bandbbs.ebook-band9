@@ -55,18 +55,22 @@ export default {
   back(){
 	storage.set({
 	  		key: 'EBOOK_FONT',
-	  		value: this.fontSize,
-	  		success: function(data) {
-	  		  //console.log('handling success')
-	  		},
-	  		fail: function(data, code) {
-	  		  //console.log(`handling fail, code = ${code}`)
-	  		}
+	  		value: this.fontSize.toString(),
+	  		complete: () => { router.back(); }
 	  	})
-  	router.back();
   },
   exit(){
-	  app.terminate();
+	  storage.set({
+		  key: 'EBOOK_FONT',
+		  value: this.fontSize.toString(),
+		  complete: () => { app.terminate(); }
+	  })
+  },
+  onDestroy(){
+	storage.set({
+		key: 'EBOOK_FONT',
+		value: this.fontSize.toString()
+	})
   }
 }
 </script>
