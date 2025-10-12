@@ -66,21 +66,35 @@ export default {
 	},
 	change(e) {
 		this.opacity = e.detail.value;
+		// 实时保存
 		storage.set({
 			key: "EBOOK_OPACITY",
 			value: this.opacity.toString(),
 		});
 	},
 	back() {
+		// 确保保存完成后再返回
 		storage.set({
 			key: "EBOOK_OPACITY",
 			value: this.opacity.toString(),
+			complete: () => { router.back(); }
 		});
-		router.back();
 	},
 	exit() {
-		app.terminate();
+		// 退出前保存，complete 回调里终止应用，避免未写入完成
+		storage.set({
+			key: "EBOOK_OPACITY",
+			value: this.opacity.toString(),
+			complete: () => { app.terminate(); }
+		});
 	},
+	onDestroy() {
+		// 兜底保存
+		storage.set({
+			key: "EBOOK_OPACITY",
+			value: this.opacity.toString()
+		});
+	}
 };
 </script>
 
