@@ -8,7 +8,7 @@
 				width: 102px;
 				height: 72px;
 			" />
-			<text static style="position: absolute;left: 63px;top: 86px;width: 66px;height: 42px;font-size: 32px;font-weight: bold;color: white;text-align: center;">字体亮度</text>
+			<text static style="position: absolute;left: 32px;top: 86px;width: 128px;height: 42px;font-size: 32px;font-weight: bold;color: white;text-align: center;">字体亮度</text>
 		<div style="
 				position: absolute;
 				left: 0px;
@@ -29,7 +29,6 @@
 		</number>
 	</div>
 </template>
-
 <script>
 import router from "@system.router";
 import storage from '../../common/storage.js';
@@ -66,38 +65,23 @@ export default {
 	},
 	change(e) {
 		this.opacity = e.detail.value;
-		// 实时保存
 		storage.set({
 			key: "EBOOK_OPACITY",
 			value: this.opacity.toString(),
 		});
 	},
 	back() {
-		// 确保保存完成后再返回
 		storage.set({
 			key: "EBOOK_OPACITY",
 			value: this.opacity.toString(),
-			complete: () => { router.back(); }
 		});
+		router.back();
 	},
 	exit() {
-		// 退出前保存，complete 回调里终止应用，避免未写入完成
-		storage.set({
-			key: "EBOOK_OPACITY",
-			value: this.opacity.toString(),
-			complete: () => { app.terminate(); }
-		});
+		app.terminate();
 	},
-	onDestroy() {
-		// 兜底保存
-		storage.set({
-			key: "EBOOK_OPACITY",
-			value: this.opacity.toString()
-		});
-	}
 };
 </script>
-
 <style>
 .page {
 	width: 192px;
